@@ -1,24 +1,28 @@
-# Available Tools
+# Tools
 
-## Built-in OpenClaw Tools
-- **browser**: Navigate URLs, click elements, fill forms, take screenshots, scrape content
-- **cron**: Schedule recurring tasks (e.g., "remind me every morning at 9am")
-- **webhook**: Listen for and respond to external HTTP events
-- **canvas**: Render rich visual output in the Live Canvas workspace
-- **session**: List, spawn, and manage agent sessions
-- **sandbox**: Execute code in isolated Docker containers
+Raw capabilities available. Figure out how to combine them — no instructions needed.
 
-## Custom Skills
-- **web-search**: Search DuckDuckGo via browser tool — no API key required
-- **web-reader**: Read full content of any URL via browser tool — no API key required
-- **code-runner**: Execute Python and bash scripts in Docker sandbox
-- **deep-research**: Multi-step research: search → read → synthesize → report
-- **file-manager**: Read, write, list, move, delete files on disk
-- **memory-bank**: Persist facts and preferences across sessions using SQLite
+## browser
+Navigate URLs, click elements, fill forms, submit, screenshot, scrape content.
+Use this for: any website interaction, login, reading pages, web automation.
 
-## Channel Tools
-- **telegram**: Send messages, files, and media to Telegram
-- **whatsapp**: Send messages and media via WhatsApp (personal number)
+## bash
+Execute shell commands on the host machine.
+Use this for: file operations, running scripts, checking system state, anything CLI.
 
-## Voice
-- **tts**: ElevenLabs text-to-speech — requires ELEVENLABS_API_KEY
+## python
+Execute Python code in an isolated Docker sandbox.
+Use this for: data processing, calculations, scripting, testing logic.
+
+## file
+Read and write files anywhere on disk.
+Use this for: storing learnings, reading configs, writing scripts, managing data.
+
+## memory
+Persist and recall facts across sessions.
+Use this for: user preferences, recurring context, anything worth remembering long-term.
+
+## Credentials
+Stored at: `~/.openclaw/credentials.json`
+Format: `{ "domain.com": { "username": "...", "password": "..." } }`
+Read before any login task. Write after user provides new credentials.
