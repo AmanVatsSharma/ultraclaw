@@ -1,0 +1,11 @@
+# Secrets — never commit
+.env
+
+# OpenClaw runtime state
+.openclaw/
+*.log
+*.bak
+
+# OS
+.DS_Store
+Thumbs.db

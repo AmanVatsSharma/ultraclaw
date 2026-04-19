@@ -1,0 +1,23 @@
+{
+  "agent": {
+    "model": "anthropic/claude-sonnet-4-6"
+  },
+  "workspace": "/home/amansharma/Desktop/workspace/OpenClaw",
+  "env": "/home/amansharma/Desktop/workspace/OpenClaw/.env",
+  "voice": {
+    "tts": "elevenlabs"
+  },
+  "sandbox": {
+    "enabled": true,
+    "driver": "docker"
+  },
+  "channels": {
+    "whatsapp": {
+      "selfChatMode": true,
+      "dmPolicy": "open"
+    },
+    "telegram": {
+      "dmPolicy": "open"
+    }
+  }
+}
