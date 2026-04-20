@@ -1,6 +1,6 @@
 # UltraClaw
 
-**Your personal AI agent — powered by Claude, running on [OpenClaw](https://github.com/openclaw/openclaw).**
+**Your personal AI agent — powered by Claude or Gemini, running on [OpenClaw](https://github.com/openclaw/openclaw).**
 
 UltraClaw is a self-hosted, multi-channel AI assistant you run on your own machine. Talk to it from your terminal, Telegram, or WhatsApp. It can search the web, execute code, research topics in depth, manage files, and remember things across sessions — all locally, all under your control.
 
@@ -27,7 +27,7 @@ UltraClaw is a self-hosted, multi-channel AI assistant you run on your own machi
 
 - Node.js 24+ (not Bun — required for WhatsApp stability)
 - Docker (for code execution sandbox)
-- An [Anthropic API key](https://console.anthropic.com) with credits
+- An [Anthropic API key](https://console.anthropic.com) with credits, **or** a [Google AI Studio API key](https://aistudio.google.com/apikey) if you prefer Gemini
 
 ---
 
@@ -54,23 +54,51 @@ Copy `.env.example` to `.env` and fill in your key:
 cp .env.example .env
 ```
 
+Set the key matching the provider you want to use:
+
 ```env
+# If using Claude (default)
 ANTHROPIC_API_KEY=your-anthropic-api-key-here
+
+# If using Gemini instead
+GOOGLE_GENERATIVE_AI_API_KEY=your-google-api-key-here
+
 ELEVENLABS_API_KEY=your-elevenlabs-key-here   # optional
 ```
 
-Then add to your shell profile (`~/.bashrc` or `~/.zshrc`):
+Then add the same line to your shell profile (`~/.bashrc` or `~/.zshrc`):
 
 ```bash
 export ANTHROPIC_API_KEY=your-key-here
+# or, for Gemini:
+export GOOGLE_GENERATIVE_AI_API_KEY=your-key-here
 ```
 
 ### 4. Configure OpenClaw
+
+Claude is the default. To stay on Claude:
 
 ```bash
 openclaw config set gateway.mode local
 openclaw config set agents.defaults.model "anthropic/claude-sonnet-4-6"
 ```
+
+To use Gemini instead, pick one of:
+
+```bash
+openclaw config set agents.defaults.model "google/gemini-2.5-pro"    # highest capability
+openclaw config set agents.defaults.model "google/gemini-2.5-flash"  # faster and cheaper
+```
+
+Also update `openclaw.json` (the `agent.model` field) to match, so `./start.sh` validates the right API key.
+
+#### Choosing a model
+
+| Model | Strengths | Tradeoffs |
+|---|---|---|
+| `anthropic/claude-sonnet-4-6` | Default; strong tool use, long context | Paid API, rate-limited on free tier |
+| `google/gemini-2.5-pro` | Highest Gemini capability; good for deep research | Higher cost than flash |
+| `google/gemini-2.5-flash` | Fast + cheap; good for chat and most tool calls | Less capable on complex reasoning |
 
 ### 5. Start the gateway
 
