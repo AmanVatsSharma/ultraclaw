@@ -11,27 +11,54 @@
 #   - Keeps process running; use Ctrl+C or tmux to manage
 #
 # Key invariants:
-#   - ANTHROPIC_API_KEY must be set before running
+#   - The API key matching the provider in openclaw.json must be set
+#     (ANTHROPIC_API_KEY for anthropic/*, GOOGLE_GENERATIVE_AI_API_KEY
+#     or GOOGLE_API_KEY for google/*)
 #   - Docker must be running for sandbox/code-runner to work
 #   - WhatsApp and Telegram must already be linked (see README)
 #
 # Author:      Aman
-# Last-updated: 2026-04-19
+# Last-updated: 2026-04-20
 
 set -e
 
 WORKSPACE_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Validate required env vars
-if [ -z "$ANTHROPIC_API_KEY" ]; then
-  echo "ERROR: ANTHROPIC_API_KEY is not set."
-  echo "Add it to ~/.bashrc:  export ANTHROPIC_API_KEY=your-key-here"
+# Read the configured model from openclaw.json (first "model" string value)
+MODEL="$(sed -n 's/.*"model"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$WORKSPACE_DIR/openclaw.json" | head -n 1)"
+
+if [ -z "$MODEL" ]; then
+  echo "ERROR: could not read agent.model from openclaw.json"
   exit 1
 fi
 
+PROVIDER="${MODEL%%/*}"
+
+# Validate required env vars based on the configured provider
+case "$PROVIDER" in
+  anthropic)
+    if [ -z "$ANTHROPIC_API_KEY" ]; then
+      echo "ERROR: ANTHROPIC_API_KEY is not set (required for model '$MODEL')."
+      echo "Add it to ~/.bashrc:  export ANTHROPIC_API_KEY=your-key-here"
+      exit 1
+    fi
+    ;;
+  google)
+    if [ -z "$GOOGLE_GENERATIVE_AI_API_KEY" ] && [ -z "$GOOGLE_API_KEY" ]; then
+      echo "ERROR: neither GOOGLE_GENERATIVE_AI_API_KEY nor GOOGLE_API_KEY is set (required for model '$MODEL')."
+      echo "Add one to ~/.bashrc:  export GOOGLE_GENERATIVE_AI_API_KEY=your-key-here"
+      exit 1
+    fi
+    ;;
+  *)
+    echo "WARNING: unknown provider '$PROVIDER' in model '$MODEL'."
+    echo "Make sure the appropriate API key env var is set for your provider."
+    ;;
+esac
+
 echo "Starting UltraClaw gateway..."
 echo "Workspace: $WORKSPACE_DIR"
-echo "Model: anthropic/claude-sonnet-4-6"
+echo "Model: $MODEL"
 echo ""
 
 if [ "$1" = "--quiet" ]; then
